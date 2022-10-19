@@ -5,9 +5,9 @@ import os, sys, platform, json, getpass, serial, time, traceback
 import py_simple_serial.simpleSerial as ss
 
 # Detect the operating system and abort if not Linux 
-#if platform.system() != "Linux": 
-#    print( "RPS works only on linux!" ) 
-#    exit() 
+if platform.system() != "Linux": 
+    print( "RPS works only on linux!" ) 
+    exit() 
 
 # -------------------------------------------------------------------------------------------------------
 
@@ -24,10 +24,10 @@ VALID_COMMANDS_CONST = [ "info", "getOne", "getAll", "setOne", "addUser", "remov
 DEVICE_BAUDRATE_CONST = 115200
 
 INITIAL_CONFIGURATION_CONST = "{ }" 
-#CONFIGURATION_FILE_DIR_CONST="/etc/rps"
-#CONFIGURATION_FILE_PATH_CONST= CONFIGURATION_FILE_DIR_CONST + "/rps.conf"
-CONFIGURATION_FILE_DIR_CONST="./" 
-CONFIGURATION_FILE_PATH_CONST = "rps.conf"
+CONFIGURATION_FILE_DIR_CONST="/etc/rps"
+CONFIGURATION_FILE_PATH_CONST= CONFIGURATION_FILE_DIR_CONST + "/rps.conf"
+#CONFIGURATION_FILE_DIR_CONST="./" 
+#CONFIGURATION_FILE_PATH_CONST = "rps.conf"
 
 # The time period within which a valid response must be received
 RESPONSE_WAIT_DELAY_CONST = 0.5
@@ -246,8 +246,17 @@ def set_one_command( dev, channel, state ):
     Returns:
         None/dict : If there is a valid response from the device, that response is returned.
     """
+    global CONFIGURATION_DATA
+
     channel = int(channel)
     state = int(state)
+
+    if len(CONFIGURATION_DATA[ DEVICE_PORT ][ "channel_permissions" ][ channel ])==0 or \
+        os.getlogin() != CONFIGURATION_DATA[ DEVICE_PORT ][ "channel_permissions" ][ channel ][0]:
+        
+        print( "Permission Denied : Invalid User")
+        return None
+
     msg = {
         "version" : "1",
         "title" : 4,
@@ -520,7 +529,7 @@ if __name__ == "__main__":
     except PermissionError:
         print( "Permission Denied, try with elevated permission!" )
     except:
-        traceback.print_exc()
+        #traceback.print_exc()
         print( "Something went wrong :(" )
     finally:
         dev.disconnect()
