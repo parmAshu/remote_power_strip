@@ -5,9 +5,9 @@ import os, sys, platform, json, getpass, serial, time, traceback
 import py_simple_serial.simpleSerial as ss
 
 # Detect the operating system and abort if not Linux 
-if platform.system() != "Linux": 
-    print( "RPS works only on linux!" ) 
-    exit() 
+#if platform.system() != "Linux": 
+#    print( "RPS works only on linux!" ) 
+#    exit() 
 
 # -------------------------------------------------------------------------------------------------------
 
@@ -24,10 +24,10 @@ VALID_COMMANDS_CONST = [ "info", "getOne", "getAll", "setOne", "addUser", "remov
 DEVICE_BAUDRATE_CONST = 115200
 
 INITIAL_CONFIGURATION_CONST = "{ }" 
-CONFIGURATION_FILE_DIR_CONST="/etc/rps"
-CONFIGURATION_FILE_PATH_CONST= CONFIGURATION_FILE_DIR_CONST + "/rps.conf"
-#CONFIGURATION_FILE_DIR_CONST="./" 
-#CONFIGURATION_FILE_PATH_CONST = "rps.conf"
+#CONFIGURATION_FILE_DIR_CONST="/etc/rps"
+#CONFIGURATION_FILE_PATH_CONST= CONFIGURATION_FILE_DIR_CONST + "/rps.conf"
+CONFIGURATION_FILE_DIR_CONST="./" 
+CONFIGURATION_FILE_PATH_CONST = "rps.conf"
 
 # The time period within which a valid response must be received
 RESPONSE_WAIT_DELAY_CONST = 0.5
@@ -151,6 +151,7 @@ def device_send_recv( dev, msg ):
     Returns:
         None/dict: When a valid response is received, it is stored in a dictionary and returned
     """
+    dev.flush()
     dev.send_message( msg )
     time.sleep( RESPONSE_WAIT_DELAY_CONST )
     resp = dev.recv()
@@ -477,7 +478,7 @@ if __name__ == "__main__":
     dev = ss.simpleSerialDevice( DEVICE_PORT, DEVICE_BAUDRATE_CONST )
     try:
         dev.connect()
-        time.sleep( 5 )
+        #time.sleep( 5 )
     except:
         print( "Connection failed!" )
         exit()
