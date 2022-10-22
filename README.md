@@ -27,6 +27,13 @@ Get state of one channel. You will have to pass the channel number as another ar
 
 Set the state of one channel. You will have to pass the channel number and state as other aguments.
 
+`addUser`
+
+Associate a user with a channel. This command requires sudo permissions.
+
+`removeUser`
+
+Remove User from a channel. This command requires sudo permissions.
 
 ### Arguments
 
